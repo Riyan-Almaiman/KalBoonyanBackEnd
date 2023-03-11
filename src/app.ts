@@ -3,7 +3,9 @@ import cors from 'cors';
 import nodemailer from 'nodemailer'
 import dotenv from 'dotenv'
 import ChatGPTRoutes from './Routes/ChatGPTRoutes'
-import socketServer from './Controllers/SocketsController';
+import sessionRoutes from './Routes/sessionsRoutes'
+
+import socketServer from './Controllers/sessionController';
 
 dotenv.config();
 
@@ -20,3 +22,4 @@ socketServer(server)
 
 
 app.use('/chat', ChatGPTRoutes)
+app.use('/session', sessionRoutes)

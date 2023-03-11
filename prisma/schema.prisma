@@ -7,7 +7,8 @@ generator client {
 
 datasource db {
   provider = "mysql"
-  url      = env("DATABASE_URL")
+  relationMode = "prisma"
+  url = env("DATABASE_URL")
 }
 
 
@@ -21,6 +22,8 @@ model User {
     password String
     role Role
     sessions Session[]
+    Chats String?
+    socketId String?
 }
 
 enum Role {
@@ -32,8 +35,8 @@ enum Role {
 model Session{
  id    String   @id @default(uuid())
  topic String 
- members Int
- Leader String
+ members Int?
+ Leader String?
   users User[]
 
 }

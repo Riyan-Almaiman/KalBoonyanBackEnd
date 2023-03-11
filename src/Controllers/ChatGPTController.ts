@@ -34,7 +34,7 @@ export const chatAPI = async (req:Request, res:Response)=>{{
 
 
     const response = await chat();
-    res.send({response: response});
+    res.json({response: response});
 
 
     async function chat() {
