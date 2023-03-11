@@ -1,7 +1,5 @@
 
-
 import {Request, Response} from 'express';
-
 import { PrismaClient } from '@prisma/client';
 import socketio, { Server } from 'socket.io';
 
@@ -11,6 +9,7 @@ const prisma = new PrismaClient();
 
 export const addUser = async (req:Request, res:Response) =>{
     try{
+        console.log(req.body)
         const user = await prisma.session.update({
             where: {
               id: req.body.id
@@ -22,9 +21,12 @@ export const addUser = async (req:Request, res:Response) =>{
                 },
               },
             }
-          });   
+          });  
+          res.json({msg:user})
+ 
     }
     catch(e){
+        console.log("error")
         res.status(500).json({msg:`Error: ${e}`});
     }
 }
@@ -53,6 +55,7 @@ export const getSessions = async (req:Request, res:Response) =>{
 //socket
 export default function socketServer(server: any) {
 
+    let id:string; 
     const io = new Server(server, { cors: { origin: '*' } });
 
     io.on('connect', async (socket) => {
@@ -62,13 +65,16 @@ export default function socketServer(server: any) {
 
         console.log(socket.id)
 
-        socket.join("lobby");
 
         socket.on('sendMessage', (data) => {
 
-            io.to("lobby").emit('receiveMessage', { from: socket.id, message: data.message });
+            io.to(id).emit('receiveMessage', { from: socket.id, message: data.message });
 
         });
+        socket.on('join',(data)=>{
+            id= data.sessionid;
+            socket.join(id)
+        })
 
         socket.on('disconnect', () => {
 
@@ -81,7 +87,6 @@ export default function socketServer(server: any) {
 
 
 }
-
 
 
 

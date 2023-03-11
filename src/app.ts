@@ -6,6 +6,7 @@ import ChatGPTRoutes from './Routes/ChatGPTRoutes'
 import sessionRoutes from './Routes/sessionsRoutes'
 
 import socketServer from './Controllers/sessionController';
+import userRoutes from './Routes/userRoutes';
 
 dotenv.config();
 
@@ -20,6 +21,6 @@ const server = app.listen(3000, () => {
 socketServer(server)
 
 
-
+app.use('/user', userRoutes)
 app.use('/chat', ChatGPTRoutes)
 app.use('/session', sessionRoutes)
