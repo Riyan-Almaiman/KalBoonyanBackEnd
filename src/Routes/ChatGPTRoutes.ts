@@ -1,5 +1,5 @@
 import express from 'express';
-import { chatAPI } from '../Controllers/ChatGPT';
+import { chatAPI } from '../Controllers/ChatGPTController';
 
 const router = express.Router();
 

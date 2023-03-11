@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <title></title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <link rel="stylesheet" href="test.css">
+    </head>
+    <style>
+      pre {
+    white-space: pre-wrap;       /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+    </style>
+    <body>
+       
+      <script src="https://kit.fontawesome.com/931b05717d.js" crossorigin="anonymous"></script>
+
+                  <h1>ChatGPT therapist Test</h1>
+
+          <div>
+
+            <input style="font-size: 30px; width:80vw;" id="prompt">
+            <span class="text-cursor"></span>
+          </div>
+          <div style=" max-width: 80vw;">
+            <pre  style=" max-width: 80vw;" >
+              <code><p  style= "border-radius: 15px 15px 15px 15px; padding: 6px; background-color: rgb(233, 219, 219);" id="answer" class="typing"></p></code>
+            </pre>
+          </div>
+          
+        <button  style="font-size: 40px" onclick="getResponse()">اسال</button>
+        
+        <script> 
+        let but = true; 
+          var speed = 50;
+          let txt = ""
+          let i = 0
+  if(document.getElementById("answer").innerHTML =='<i style="font-size: 30px" class="fa-solid fa-comment-dots fa-fade"></i>'){
+
+
+    but = false;
+  }
+
+async function typeWriter() {
+  if (i < txt.length) {
+    document.getElementById("answer").innerHTML += txt.charAt(i);
+    i++;
+    setTimeout(typeWriter, speed);
+  }
+  else{
+
+    i=0;
+    but=true;
+  }
+}
+async function getResponse() {
+  if(but==false){return}
+  document.getElementById("answer").innerHTML ='<i class="fa-solid fa-comment-dots fa-fade"></i>';
+  document.getElementById("answer").style.fontSize ='23px'
+
+  const prompt = document.getElementById("prompt").value;
+  const response = await fetch("https://valley-candle-distance.glitch.me/", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({ prompt: prompt })
+  });
+  txt =  await response.text();
+  console.log(txt)
+  document.getElementById("answer").innerHTML ="";
+
+    typeWriter()
+ 
+  //document.getElementById("answer").textContent = answer;
+}
+
+
+       
+
+        </script>
+   </body>
+</html>

@@ -4,10 +4,7 @@ import {Request, Response} from 'express';
 import { PrismaClient } from '@prisma/client';
 import {Configuration, OpenAIApi} from 'openai';
 
-interface conversation{
-        role: string
-        content: string
-}
+
 const prisma = new PrismaClient();
 const configuration = new Configuration({
     apiKey: process.env.API_KEY

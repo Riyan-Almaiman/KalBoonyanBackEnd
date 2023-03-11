@@ -3,7 +3,6 @@ import cors from 'cors';
 import nodemailer from 'nodemailer'
 import dotenv from 'dotenv'
 import ChatGPTRoutes from './Routes/ChatGPTRoutes'
-import socketio, { Server } from 'socket.io';
 import socketServer from './Controllers/SocketsController';
 
 dotenv.config();
@@ -15,7 +14,6 @@ app.use(express.json());
 const server = app.listen(3000, () => {
     console.log('Server started on port 3000');
   });
-const io = new Server(server, { cors: { origin: '*' } });
 
 socketServer(server)
 
