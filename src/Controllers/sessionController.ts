@@ -81,7 +81,12 @@ export default function socketServer(server: any) {
 
     let id:string; 
     const io = new Server(server, { cors: { origin: '*' } });
+    const webrtc = io.of('/webrtc');
 
+    webrtc.on('connection', (socket) => {
+      console.log('A WebRTC client connected');
+    });
+    
     io.on('connect', async (socket) => {
 
         console.log("user connected")
