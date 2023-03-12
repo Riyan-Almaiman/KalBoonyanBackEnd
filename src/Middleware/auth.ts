@@ -17,6 +17,7 @@ const auth = (req:Request, res:Response, next:NextFunction)=>{
 
         const user = jwt.verify(token, process.env.SECRET as string) as User;
         res.locals.user = user;
+        
         next();
     }catch(e){
         return  res.status(403).json({message: "You are not authorized, please provide a valid token."})

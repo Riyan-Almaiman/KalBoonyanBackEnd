@@ -33,12 +33,14 @@ export const addUser = async (req:Request, res:Response) =>{
 
 export const getSessions = async (req:Request, res:Response) =>{
     try{
-        const user = await prisma.session.findMany({
+        const sessions = await prisma.session.findMany({
                     include:{
 
                         users:true
                     }
           });   
+          console.log(sessions)
+          res.json(sessions)
     }
     catch(e){
         res.status(500).json({msg:`Error: ${e}`});
@@ -48,6 +50,28 @@ export const getSessions = async (req:Request, res:Response) =>{
 
 
 
+export const createSession = async (req:Request, res:Response) =>{
+
+    if(res.locals.user.role!="SUPPORTER"){return}
+    try{
+
+        
+        const sessions = await prisma.session.create({
+
+
+            data:{
+                topic: req.body.topic,
+                Leader: res.locals.user.username
+            }
+                 
+          });   
+          console.log(sessions)
+          res.json(sessions)
+    }
+    catch(e){
+        res.status(500).json({msg:`Error: ${e}`});
+    }
+}
 
 
 
@@ -63,17 +87,18 @@ export default function socketServer(server: any) {
         console.log("user connected")
 
 
-        console.log(socket.id)
-
 
         socket.on('sendMessage', (data) => {
 
-            io.to(id).emit('receiveMessage', { from: socket.id, message: data.message });
+            console.log(data)
+            socket.to(data.group).emit('receiveMessage', { group: id, message: data.message });
 
         });
         socket.on('join',(data)=>{
-            id= data.sessionid;
-            socket.join(id)
+            id= data.sessionId;
+            socket.join(id);
+            
+
         })
 
         socket.on('disconnect', () => {
@@ -87,6 +112,8 @@ export default function socketServer(server: any) {
 
 
 }
+
+
 
 
 

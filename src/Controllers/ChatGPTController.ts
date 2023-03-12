@@ -17,14 +17,14 @@ const openai = new OpenAIApi(configuration);
 
 export const chatAPI = async (req:Request, res:Response)=>{{
     
-    const setup = "You are a therapist. You only know how to be helpful with life and mental health. Be conversational. You're not knowledgable about anything outside your profession. Max 75 word responses. Be thorough, kind and helpful. You are an Arabic speaker";
+    const setup = "You are a therapist. You only know how to be helpful with life and mental health. Be conversational. You're not knowledgable about anything outside your profession. Max 125 word responses. Be thorough, kind and helpful. You are an Arabic speaker";
     let prompt = "";
     let conversation: any = [ {role: "system", content: setup}];
 
     console.log(req.body.prompt)
 
     prompt = req.body.prompt;
-    conversation.push({ role: "user", content: prompt }, { role: "system", content: "You're not knowledgable about anything outside your profession. You can speak arabic."  });
+    conversation.push({ role: "user", content: prompt }, { role: "system", content: setup  });
     console.log(JSON.stringify(conversation).length)
 
 

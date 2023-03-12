@@ -39,5 +39,6 @@ model Session{
  Leader String?
   users User[]
   date DateTime?
+  isAccepted Boolean @default(false)
 
 }
