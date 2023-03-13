@@ -43,19 +43,19 @@
           let txt = ""
           let i = 0
   
-async function typeWriter() {
-  but=false;
-  if (i < txt.length) {
-    document.getElementById("answer").innerHTML += txt.charAt(i);
-    i++;
-    setTimeout(typeWriter, speed);
-  }
-  else{
+  async function typeWriter() {
+    but=false;
+    if (i < txt.length) {
+      document.getElementById("answer").innerHTML += txt.charAt(i);
+      i++;
+      setTimeout(typeWriter, speed);
+    }
+    else{
 
-    i=0;
-    but=true;
+      i=0;
+      but=true;
+    }
   }
-}
 async function getResponse() {
   if(but==false){return}
   document.getElementById("answer").innerHTML ='<i class="fa-solid fa-comment-dots fa-fade"></i>';

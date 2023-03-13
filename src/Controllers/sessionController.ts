@@ -6,6 +6,9 @@ import socketio, { Server } from 'socket.io';
 const prisma = new PrismaClient();
 
 
+const users:any = {};
+
+
 
 export const addUser = async (req:Request, res:Response) =>{
     try{
@@ -47,6 +50,26 @@ export const getSessions = async (req:Request, res:Response) =>{
     }
 }
 
+export const getSession = async (req:Request, res:Response) =>{
+    try{
+        const session = await prisma.session.findUnique({
+                    
+                    where:{
+                        id: req.params.sessionId
+                    },
+                    include:{
+
+                        users:true
+                    }
+          });   
+          res.json(session)
+    }
+    catch(e){
+        res.status(500).json({msg:`Error: ${e}`});
+    }
+}
+
+
 
 
 
@@ -81,12 +104,7 @@ export default function socketServer(server: any) {
 
     let id:string; 
     const io = new Server(server, { cors: { origin: '*' } });
-    const webrtc = io.of('/webrtc');
-
-    webrtc.on('connection', (socket) => {
-      console.log('A WebRTC client connected');
-    });
-    
+   
     io.on('connect', async (socket) => {
 
         console.log("user connected")
@@ -96,21 +114,29 @@ export default function socketServer(server: any) {
         socket.on('sendMessage', (data) => {
 
             console.log(data)
-            socket.to(data.group).emit('receiveMessage', { group: id, message: data.message });
+            socket.to(id).emit('receiveMessage', { user: data.user, text: data.text, isSent:false });
 
         });
-        socket.on('join',(data)=>{
+
+        socket.on('join',(data)=>{    
+            users[socket.id] = data.username;
+
             id= data.sessionId;
             socket.join(id);
+            console.log(data)
+            socket.to(data.sessionId).emit('userJoined', {username: data.username});
             
 
         })
 
         socket.on('disconnect', () => {
 
-            console.log(socket.id + ' disconnected');
-
-        });
+            const username = users[socket.id];
+            console.log(`User ${socket.id} disconnected`);
+        
+            delete users[socket.id];
+            io.to(id).emit('userLeft', { username: username });
+          });
 
 
     });
