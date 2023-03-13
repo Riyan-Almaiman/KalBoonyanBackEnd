@@ -35,10 +35,10 @@ enum Role {
 model Session{
  id    String   @id @default(uuid())
  topic String 
- members Int? @default(0)
  Leader String?
   users User[]
   date DateTime?
   isAccepted Boolean @default(false)
+  description String?
 
 }

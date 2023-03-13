@@ -7,6 +7,7 @@ const prisma = new PrismaClient();
 
 
 export const createUser = async (req:Request, res:Response) =>{
+    console.log('creating')
     const hash = await argon2.hash(req.body.password);
     try{
         const user = await prisma.user.create({
@@ -14,13 +15,25 @@ export const createUser = async (req:Request, res:Response) =>{
                 username:req.body.username,
                 email: req.body.email,
                 password: hash,
-                role: req.body.role
+                role: req.body.role.toUpperCase()
             }
         });
         if(user){
-            res.status(200).json({msg:"user created!"})
-        }
-    }catch(e){
+            const token = jwt.sign({
+                id: user.id,
+                name: user.username,
+                role: user.role,
+                email: user.email
+            }, process.env.SECRET as string, {
+                expiresIn: '5h'
+            });
+            return res.status(200).json({
+                username:user.username,
+        token: token
+            });       
+         }
+    }
+    catch(e){
         res.status(500).json({msg:`Error: ${e}`});
     }
 }
@@ -54,7 +67,7 @@ export const login = async (req:Request, res:Response)=>{
         expiresIn: '5h'
     });
     return res.status(200).json({
-        message:`Hello ${user.username}`,
+        username:user.username,
         token: token
     });
 
