@@ -1,7 +1,9 @@
 import nodemailer from 'nodemailer'
 
 
-const transporter = nodemailer.createTransport({
+
+
+export const transporter = nodemailer.createTransport({
     service: "gmail",
     auth:{
 
@@ -12,13 +14,13 @@ const transporter = nodemailer.createTransport({
 
 })
 
+//const options = {
 
-const options = {
+    //from: "Kalboonyanmarsoos@gmail.com",
+    //to: "ralmaiman@gmail.com",
+    //subject: "nodemailer test",
+   // text: "Your Session has been"
 
-    from: "Kalboonyanmarsoos@gmail.com",
-    to: "Kalboonyanmarsoos@gmail.com",
-    subject: "nodemailer test",
-    text: "nodemailer test"
-}
+//}
 
-transporter.sendMail(options)
+//transporter.sendMail(options)

@@ -12,6 +12,7 @@ datasource db {
 }
 
 
+
 //still working on all of these models, not final
 
 
@@ -22,8 +23,6 @@ model User {
     password String
     role Role
     sessions Session[]
-    Chats String?
-    socketId String?
 }
 
 enum Role {

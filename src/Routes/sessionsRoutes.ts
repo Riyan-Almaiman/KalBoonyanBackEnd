@@ -11,7 +11,7 @@ router.get("/", getSessions)
 
 router.get("/:sessionId", getSession)
 
-router.put("/create", createSession)
+router.post("/create", auth, createSession)
 
 
 

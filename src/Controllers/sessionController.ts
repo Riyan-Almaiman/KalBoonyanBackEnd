@@ -2,11 +2,13 @@
 import {Request, Response} from 'express';
 import { PrismaClient } from '@prisma/client';
 import socketio, { Server } from 'socket.io';
+import { transporter } from './EmailController';
+
 
 const prisma = new PrismaClient();
 
 
-const users:any = {};
+let users:any = {};
 
 
 
@@ -73,23 +75,43 @@ export const getSession = async (req:Request, res:Response) =>{
 
 
 
+
 export const createSession = async (req:Request, res:Response) =>{
 
+
+
     if(res.locals.user.role!="SUPPORTER"){return}
+    let date = new Date(req.body.date)
+    date.setHours(date.getHours()+3)
+
     try{
 
         
-        const sessions = await prisma.session.create({
+        const session = await prisma.session.create({
 
 
             data:{
+                date: date,
                 topic: req.body.topic,
-                Leader: res.locals.user.username
+                Leader: res.locals.user.name,
+                description: req.body.description
             }
                  
           });   
-          console.log(sessions)
-          res.json(sessions)
+          console.log("session created: " + session)
+
+          try{
+        transporter.sendMail({
+            from: "Kalboonyanmarsoos@gmail.com",
+            to: res.locals.user.email,
+            subject: "Session Created",
+            text: "Session: "+session.topic +"Created. Session Date: "+ session.date?.toISOString()
+
+
+        })}catch{
+            console.log("invalid email")
+        }
+          res.json(session)
     }
     catch(e){
         res.status(500).json({msg:`Error: ${e}`});
@@ -110,7 +132,6 @@ export default function socketServer(server: any) {
         console.log("user connected")
 
 
-
         socket.on('sendMessage', (data) => {
 
             console.log(data)
@@ -120,18 +141,18 @@ export default function socketServer(server: any) {
 
         socket.on('join',(data)=>{    
             users[socket.id] = data.username;
-
             id= data.sessionId;
             socket.join(id);
-            console.log(data)
             socket.to(data.sessionId).emit('userJoined', {username: data.username});
-            
+            socket.emit('users', {users: users})
+
 
         })
 
         socket.on('disconnect', () => {
 
             const username = users[socket.id];
+            console.log(username)
             console.log(`User ${socket.id} disconnected`);
         
             delete users[socket.id];
