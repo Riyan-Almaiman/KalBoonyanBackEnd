@@ -3,6 +3,7 @@ import {Request, Response} from 'express';
 import { PrismaClient } from '@prisma/client';
 import socketio, { Server } from 'socket.io';
 import { transporter } from './EmailController';
+import { Session } from 'inspector';
 
 
 const prisma = new PrismaClient();
@@ -14,8 +15,9 @@ let users:any = {};
 
 export const addUser = async (req:Request, res:Response) =>{
     try{
-        console.log(req.body)
-        const user = await prisma.session.update({
+     
+           
+       const session = await prisma.session.update({
             where: {
               id: req.body.id
             },
@@ -27,7 +29,28 @@ export const addUser = async (req:Request, res:Response) =>{
               },
             }
           });  
-          res.json({msg:user})
+          try{
+          transporter.sendMail({
+            from: "Kalboonyanmarsoos@gmail.com",
+            to: res.locals.user.email,
+            subject: "Session Created",
+            text: "Session Joined: "+session.topic +"Session Date: "+ session.date?.toISOString()   
+
+
+        }).then(console.log)
+        .catch(console.error);}catch{
+            console.log("invalid email")
+        }
+        const sessions = await prisma.session.findMany({
+            include:{
+
+                users:true
+            }
+  });   
+  res.json({sessions: sessions})
+
+
+          
  
     }
     catch(e){
@@ -44,13 +67,38 @@ export const getSessions = async (req:Request, res:Response) =>{
                         users:true
                     }
           });   
-          console.log(sessions)
-          res.json(sessions)
+          res.json({sessions: sessions})
     }
     catch(e){
         res.status(500).json({msg:`Error: ${e}`});
     }
 }
+
+
+
+export const getSessionsProfile = async (req: Request, res: Response) => {
+    try {
+      const userId = res.locals.user.id; // get the user's ID from the token
+  
+      const sessions = await prisma.session.findMany({
+        include: {
+          users: true
+        },
+        where: {
+          users: {
+            some: {
+              id: userId
+            }
+          }
+        }
+      });
+  
+      res.json({sessions: sessions} );
+    } catch (e) {
+      res.status(500).json({ msg: `Error: ${e}` });
+    }
+  };
+
 
 export const getSession = async (req:Request, res:Response) =>{
     try{
@@ -64,12 +112,13 @@ export const getSession = async (req:Request, res:Response) =>{
                         users:true
                     }
           });   
-          res.json(session)
+          res.json({session: session})
     }
     catch(e){
         res.status(500).json({msg:`Error: ${e}`});
     }
 }
+
 
 
 
@@ -94,7 +143,8 @@ export const createSession = async (req:Request, res:Response) =>{
                 date: date,
                 topic: req.body.topic,
                 Leader: res.locals.user.name,
-                description: req.body.description
+                description: req.body.description,
+                type: req.body.type
             }
                  
           });   
@@ -105,10 +155,11 @@ export const createSession = async (req:Request, res:Response) =>{
             from: "Kalboonyanmarsoos@gmail.com",
             to: res.locals.user.email,
             subject: "Session Created",
-            text: "Session: "+session.topic +"Created. Session Date: "+ session.date?.toISOString()
+            text: "<p>Session: "+session.topic +"Created. </p> <p>Session Date: "+ session.date?.toISOString()+"</p>"
 
 
-        })}catch{
+        }).then(console.log)
+        .catch(console.error);}catch{
             console.log("invalid email")
         }
           res.json(session)

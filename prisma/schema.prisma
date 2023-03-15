@@ -32,7 +32,9 @@ enum Role {
 }
 
 model Session{
+
  id    String   @id @default(uuid())
+ type String 
  topic String 
  Leader String?
   users User[]
