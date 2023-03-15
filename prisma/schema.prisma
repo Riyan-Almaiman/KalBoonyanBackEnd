@@ -25,6 +25,12 @@ model User {
     sessions Session[]
 }
 
+
+model Suggestion {
+    id    String   @id @default(uuid())
+    topic String
+}
+
 enum Role {
   SUPPORTER
   ADMIN

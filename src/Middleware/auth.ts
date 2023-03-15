@@ -8,6 +8,8 @@ interface User{
     email: string
 }
 const auth = (req:Request, res:Response, next:NextFunction)=>{
+    console.log('authenticating')
+
     try{
         const token = req.headers.authorization;
 

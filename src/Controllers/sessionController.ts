@@ -59,6 +59,32 @@ export const addUser = async (req:Request, res:Response) =>{
     }
 }
 
+export const createSuggestion = async (req: Request, res: Response) => {
+  
+
+    const sessions = await prisma.suggestion.create({
+    
+            data:{
+
+                  topic:req.body.topic
+
+            }
+    
+    
+    }
+
+   
+    )
+  }
+
+  export const getSuggestions = async (req: Request, res: Response) => {
+  
+
+    const suggestions = await prisma.suggestion.findMany( )
+    res.json(suggestions)
+  }
+
+  
 export const getSessions = async (req:Request, res:Response) =>{
     try{
         const sessions = await prisma.session.findMany({
