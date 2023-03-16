@@ -69,7 +69,8 @@ export const login = async (req:Request, res:Response)=>{
     return res.status(200).json({
         username:user.username,
         token: token,
-        email: user.email
+        email: user.email,
+        role:user.role
     });
 
 }
