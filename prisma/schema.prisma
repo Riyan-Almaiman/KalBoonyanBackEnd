@@ -12,6 +12,7 @@ datasource db {
 }
 
 
+
 //still working on all of these models, not final
 
 
@@ -22,8 +23,12 @@ model User {
     password String
     role Role
     sessions Session[]
-    Chats String?
-    socketId String?
+}
+
+
+model Suggestion {
+    id    String   @id @default(uuid())
+    topic String
 }
 
 enum Role {
@@ -33,7 +38,9 @@ enum Role {
 }
 
 model Session{
+
  id    String   @id @default(uuid())
+ type String 
  topic String 
  Leader String?
   users User[]

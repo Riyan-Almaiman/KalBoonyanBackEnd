@@ -53,7 +53,7 @@ export const login = async (req:Request, res:Response)=>{
         
         return res.status(400).json({Error:"Wrong email adress"});
     }
-    else if(!await argon2.verify( user.password, req.body.password , )){
+    else if(!await argon2.verify( user.password, req.body.password  )){
         
         return res.status(400).json({Error:"Wrong password"});
     }
@@ -68,7 +68,9 @@ export const login = async (req:Request, res:Response)=>{
     });
     return res.status(200).json({
         username:user.username,
-        token: token
+        token: token,
+        email: user.email,
+        role:user.role
     });
 
 }
