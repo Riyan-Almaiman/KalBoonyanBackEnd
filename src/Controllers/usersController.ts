@@ -2,7 +2,7 @@ import {Request, Response} from 'express';
 import * as argon2 from 'argon2';
 import * as jwt from 'jsonwebtoken';
 import { PrismaClient, Role } from '@prisma/client';
-const prisma = new PrismaClient();
+import {prisma} from '../config/db';
 
 
 
@@ -29,9 +29,11 @@ export const createUser = async (req:Request, res:Response) =>{
             });
             return res.status(200).json({
                 username:user.username,
-        token: token
+                token: token,
+                email:user.email,
+                role:user.role
             });       
-         }
+        }
     }
     catch(e){
         res.status(500).json({msg:`Error: ${e}`});
