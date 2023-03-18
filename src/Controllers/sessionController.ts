@@ -226,6 +226,7 @@ export default function socketServer(server: any) {
         })
 
         socket.on('audio-stream', (data) => {
+          console.log("receiving audio")
           socket.to(id).emit('audio-stream', data.audioData);
         });
 
