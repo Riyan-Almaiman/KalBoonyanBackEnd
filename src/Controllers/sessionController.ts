@@ -227,9 +227,11 @@ export default function socketServer(server: any) {
 
         socket.on('audio-stream', (data) => {
           console.log("receiving audio")
-          socket.to(id).emit('audio-stream', data.audioData);
-        });
-
+          socket.to(id).emit('audio-stream', {
+            audioData: data.audioData,
+            sampleRate: data.sampleRate,
+          });
+        })
         socket.on('disconnect', () => {
 
             const username = users[socket.id];
