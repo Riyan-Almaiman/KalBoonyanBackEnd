@@ -9,6 +9,7 @@ import socketServer from './Controllers/sessionController';
 import userRoutes from './Routes/userRoutes';
 
 import { connectDB } from './config/db';
+import path from 'path';
 
 
 dotenv.config();
@@ -19,9 +20,14 @@ app.use(express.json());
 app.use(express.static('react'))
 connectDB()
 
+app.use((req, res, next) => {
+  res.sendFile(path.join(__dirname, "..", "react", "index.html"));
+});
+
 const server = app.listen(3000, () => {
     console.log('Server started on port 3000');
   });
+
 
 
 socketServer(server)
