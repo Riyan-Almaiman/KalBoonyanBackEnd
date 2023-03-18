@@ -1,11 +1,10 @@
 
 import {Request, Response} from 'express';
 
-import { PrismaClient } from '@prisma/client';
+import {prisma} from '../config/db';
 import {Configuration, OpenAIApi} from 'openai';
 
 
-const prisma = new PrismaClient();
 const configuration = new Configuration({
     apiKey: process.env.API_KEY
   });

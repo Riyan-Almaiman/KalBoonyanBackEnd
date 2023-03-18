@@ -1,12 +1,11 @@
 
 import {Request, Response} from 'express';
-import { PrismaClient } from '@prisma/client';
+import {prisma} from '../config/db';
 import socketio, { Server } from 'socket.io';
 import { transporter } from './EmailController';
 import { Session } from 'inspector';
 
 
-const prisma = new PrismaClient();
 
 
 let users:any = {};
