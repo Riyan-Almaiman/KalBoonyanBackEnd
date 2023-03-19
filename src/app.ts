@@ -18,7 +18,7 @@ const app:Application = express();
 app.use(cors());
 app.use(express.json());
 connectDB()
-
+//
 
 const server = app.listen(3000, () => {
     console.log('Server started on port 3000');
